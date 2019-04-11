@@ -1,5 +1,6 @@
 package ro.fiipractic.mycinema.services.impl;
 
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -26,17 +27,16 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person getPersonById(Long id) {
-        return personRepository.findById(id).orElse(null);
+    public Person getPersonById(Long id) throws NotFoundException {
+        return personRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Person with id=%s was not found.", id)));
     }
-
     @Override
     public Person updatePerson(Person personToUpdate) {
         return personRepository.save(personToUpdate);
     }
 
     @Override
-    public void deletePerson(Long id) {
+    public void deletePersonById(Long id) {
         personRepository.deleteById(id);
     }
 
