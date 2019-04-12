@@ -57,9 +57,8 @@ public class PersonController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deletePerson(@PathVariable("id") Long id) throws NotFoundException {
-        if (personService.personExists(id))
-            throw new NotFoundException("Person does not exist!");
-
-        personService.deletePersonById(id);
+        Person person = personService.getPersonById(id);
+        personService.deletePerson(person);
     }
+
 }

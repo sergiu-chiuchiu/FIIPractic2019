@@ -1,6 +1,5 @@
 package ro.fiipractic.mycinema.services;
 
-import javassist.NotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import ro.fiipractic.mycinema.entity.Cinema;
+import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.repositories.CinemaRepository;
 import ro.fiipractic.mycinema.services.impl.CinemaServiceImpl;
 

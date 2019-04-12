@@ -13,5 +13,7 @@ public interface PersonService {
 
     void deletePersonById(Long id);
 
+    void deletePerson(Person person);
+
     Boolean personExists(Long id);
 }
