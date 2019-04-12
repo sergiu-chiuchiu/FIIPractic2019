@@ -1,8 +1,10 @@
 package ro.fiipractic.mycinema.entity;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "movie_room")
@@ -21,8 +23,17 @@ public class MovieRoom {
     @JsonBackReference
     private Cinema cinema;
 
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "movieRoom")
+    @JsonManagedReference
+    private List<MovieInstance> movieInstances;
 
+    public List<MovieInstance> getMovieInstances() {
+        return movieInstances;
+    }
 
+    public void setMovieInstances(List<MovieInstance> movieInstances) {
+        this.movieInstances = movieInstances;
+    }
 
     public Long getId() {
         return id;

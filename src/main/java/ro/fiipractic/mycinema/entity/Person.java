@@ -1,8 +1,11 @@
 package ro.fiipractic.mycinema.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Entity
 @Table(name = "person")
@@ -18,6 +21,11 @@ public class Person {
     @Email //validari automate pentru email
     @Column(name = "email")
     private String email;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "person")
+    @JsonManagedReference
+    private List<Reservation> reservations;
+
 
     public Person(Long id, String fullName, String phone, String email) {
         this.id = id;
@@ -61,4 +69,11 @@ public class Person {
         this.email = email;
     }
 
+    public List<Reservation> getReservations() {
+        return reservations;
+    }
+
+    public void setReservations(List<Reservation> reservations) {
+        this.reservations = reservations;
+    }
 }
