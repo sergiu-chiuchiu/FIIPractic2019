@@ -2,10 +2,12 @@ package ro.fiipractic.mycinema.controllers;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.fiipractic.mycinema.dto.CinemaDto;
 import ro.fiipractic.mycinema.entity.Cinema;
+import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.services.CinemaService;
 
 import java.net.URI;
@@ -35,4 +37,12 @@ public class CinemaController {
     public List<Cinema> getCinemaByMovieRoomCapacity(@RequestParam("capacity") Integer capacity) {
         return cinemaService.getCinemaByMovieRoomsCapacity(capacity);
     }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping(value = "{id}")
+    public void deleteCinema(@PathVariable("id") Long id) throws NotFoundException {
+        Cinema cinema = cinemaService.getCinemaById(id);
+        cinemaService.deleteCinema(cinema);
+    }
+
 }

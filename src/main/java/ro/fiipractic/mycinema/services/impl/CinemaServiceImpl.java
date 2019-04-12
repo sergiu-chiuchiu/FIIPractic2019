@@ -34,4 +34,9 @@ public class CinemaServiceImpl implements CinemaService {
         return cinemaRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Person with id=%s was not found.", id)));
     }
 
+    @Override
+    public void deleteCinema(Cinema cinema) {
+        cinemaRepository.delete(cinema);
+    }
+
 }

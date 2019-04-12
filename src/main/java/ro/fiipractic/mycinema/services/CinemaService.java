@@ -14,4 +14,6 @@ public interface CinemaService {
     List<Cinema> getCinemaByMovieRoomsCapacity(Integer capacity);
 
     Cinema getCinemaById(Long id) throws NotFoundException;
+
+    void deleteCinema(Cinema cinema);
 }
