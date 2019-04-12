@@ -1,12 +1,13 @@
 package ro.fiipractic.mycinema.controllers;
 
-import javassist.NotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ro.fiipractic.mycinema.entity.Person;
+import ro.fiipractic.mycinema.exceptions.BadRequestException;
+import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.services.PersonService;
 
 import java.net.URI;
@@ -25,6 +26,7 @@ public class PersonController {
         this.modelMapper = modelMapper;
     }
 
+
     @PostMapping
     public ResponseEntity<Person> savePerson(@RequestBody Person personToSave) throws URISyntaxException {
         Person person = personService.savePerson(modelMapper.map(personToSave, Person.class));
@@ -32,8 +34,8 @@ public class PersonController {
         return ResponseEntity.created(new URI("/api/persons/" + person.getId())).body(person);
     }
 
-    @GetMapping(value = "/{personId}")
-    public Person getPersonById(@PathVariable("personId") Long id) throws NotFoundException {
+    @GetMapping(value = "/{id}")
+    public Person getPersonById(@PathVariable("id") Long id) throws NotFoundException {
         return personService.getPersonById(id);
     }
 
@@ -42,25 +44,22 @@ public class PersonController {
         return personService.getAllPersons();
     }
 
-    @PutMapping("/updatePerson/{id}")
-    public Person updatePerson(@PathVariable("id") Long id, @RequestBody Person updatedPerson) throws NotFoundException {
-        //should be thrown a custom BadRequestException if id and personToUpdate.getId() are not equal
-        //will learn about it
-        // should see what happens if personDB is null
+    @PutMapping("/{id}")
+    public Person updatePerson(@PathVariable("id") Long id, @RequestBody Person updatedPerson) throws BadRequestException, NotFoundException {
+        if (!id.equals(updatedPerson.getId()))
+            throw new BadRequestException("Different ids: " + id + " from PathVariable and " + updatedPerson.getId() + " from RequestBody");
+
         Person personDb = personService.getPersonById(id);
-
         modelMapper.map(updatedPerson, personDb);
-
         return personService.updatePerson(personDb);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping("/deletePerson/{id}")
-    public void deletePerson(@PathVariable("id") Long id) {
-        if(personService.personExists(id)) {
-            personService.deletePersonById(id);
-        } else {
-            System.out.println("Entity does not exist!");
-        }
+    @DeleteMapping("/{id}")
+    public void deletePerson(@PathVariable("id") Long id) throws NotFoundException {
+        if (personService.personExists(id))
+            throw new NotFoundException("Person does not exist!");
+
+        personService.deletePersonById(id);
     }
 }

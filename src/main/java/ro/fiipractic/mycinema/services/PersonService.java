@@ -1,8 +1,7 @@
 package ro.fiipractic.mycinema.services;
 
-import javassist.NotFoundException;
-import org.springframework.context.annotation.Bean;
 import ro.fiipractic.mycinema.entity.Person;
+import ro.fiipractic.mycinema.exceptions.NotFoundException;
 
 import java.util.Collection;
 
