@@ -12,6 +12,8 @@ import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.repositories.CinemaRepository;
 import ro.fiipractic.mycinema.services.impl.CinemaServiceImpl;
 
+import static org.junit.Assert.fail;
+
 public class CinemaServiceTest {
 
 
@@ -29,8 +31,8 @@ public class CinemaServiceTest {
         MockitoAnnotations.initMocks(this);
         cinema = new Cinema();
         cinema.setId(1L);
-        cinema.setName("cinemaCity");
-        cinema.setAddress("tudor");
+        cinema.setName("Cinema City");
+        cinema.setAddress("Tudor Vladimirescu");
     }
 
     @Test
@@ -55,6 +57,9 @@ public class CinemaServiceTest {
 
         //act
         Cinema cinemaById = cinemaService.getCinemaById(2L);
+
+        //assert
+        fail();
     }
 
 }

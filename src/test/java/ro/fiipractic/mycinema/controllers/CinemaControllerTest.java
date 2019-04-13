@@ -38,8 +38,6 @@ public class CinemaControllerTest {
         MockitoAnnotations.initMocks(this);
     }
 
-    // numele la teste trb sa fie ff descriptiv!!!
-    //good practice la numirea testelor e sa spui ce ar trebui sa faca/returneze
     @Test
     public void shouldReturnResponseEntityForSave() throws URISyntaxException {
         createObjects(cinema, cinemaDto);
@@ -49,7 +47,6 @@ public class CinemaControllerTest {
         Mockito.when(modelMapper.map(cinemaDto, Cinema.class)).thenReturn(cinema);
 
         // act
-        // apelam metoda ce vreau sa o testez
         ResponseEntity<Cinema> cinemaResponseEntity = cinemaController.saveCinema(cinemaDto);
 
         // assert
@@ -63,7 +60,6 @@ public class CinemaControllerTest {
     }
 
     private void createObjects(Cinema cinema, CinemaDto cinemaDto) {
-        // arrange pregatim metodele de care avem nevoi
 
         cinemaDto.setId(1L);
         cinemaDto.setAddress("acasa");
@@ -74,8 +70,6 @@ public class CinemaControllerTest {
         cinema.setName("CinemaCity");
     }
 
-
-    //    dereferentiez obiectele pt a fi sterse de garabage collector pt a elibera memorpa
     @After
     public void tearDown() {
         cinema = null;
