@@ -24,6 +24,13 @@ public class Reservation {
     @JsonBackReference
     private MovieInstance movieInstance;
 
+    public void removeReservation() {
+        this.getPerson().getReservations().remove(this);
+        this.setPerson(null);
+
+        this.getMovieInstance().getReservations().remove(this);
+        this.setMovieInstance(null);
+    }
 
     public Long getId() {
         return id;

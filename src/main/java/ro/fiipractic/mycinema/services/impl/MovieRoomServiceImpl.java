@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import ro.fiipractic.mycinema.entity.MovieRoom;
 import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.repositories.MovieRoomRepository;
+import ro.fiipractic.mycinema.services.CinemaService;
 import ro.fiipractic.mycinema.services.MovieRoomService;
 
 import java.util.List;
@@ -12,12 +13,18 @@ import java.util.List;
 @Service
 public class MovieRoomServiceImpl implements MovieRoomService {
 
-    @Autowired
     private MovieRoomRepository movieRoomRepository;
+    private CinemaService cinemaService;
+
+    @Autowired
+    public MovieRoomServiceImpl(MovieRoomRepository movieRoomRepository, CinemaService cinemaService) {
+        this.movieRoomRepository = movieRoomRepository;
+        this.cinemaService = cinemaService;
+    }
 
     @Override
     public List<MovieRoom> getAll() {
-       return movieRoomRepository.findAll();
+        return movieRoomRepository.findAll();
     }
 
     @Override
@@ -37,6 +44,7 @@ public class MovieRoomServiceImpl implements MovieRoomService {
 
     @Override
     public void deleteMovieRoom(MovieRoom movieRoom) {
+        movieRoom.getCinema().removeMovieRoom(movieRoom);
         movieRoomRepository.delete(movieRoom);
     }
 

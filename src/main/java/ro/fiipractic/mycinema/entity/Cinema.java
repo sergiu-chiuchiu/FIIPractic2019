@@ -26,6 +26,11 @@ public class Cinema {
     private List<MovieInstance> movieInstances;
 
 
+    public void removeMovieRoom(MovieRoom movieRoom) {
+        movieRooms.remove(movieRoom);
+        movieRoom.setCinema(null);
+    }
+
     public Long getId() {
         return id;
     }

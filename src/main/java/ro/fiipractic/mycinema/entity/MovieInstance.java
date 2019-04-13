@@ -45,6 +45,18 @@ public class MovieInstance {
     @JsonManagedReference
     private List<Reservation> reservations;
 
+
+    public void removeMovieInstance() {
+        this.getCinema().getMovieInstances().remove(this);
+        this.setCinema(null);
+
+        this.getMovie().getMovieInstances().remove(this);
+        this.setMovie(null);
+
+        this.getMovieRoom().getMovieInstances().remove(this);
+        this.setMovieRoom(null);
+    }
+
     public Long getId() {
         return id;
     }
