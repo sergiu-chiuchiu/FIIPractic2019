@@ -18,12 +18,12 @@ public class Person {
     private String fullName;
     @Column(name = "telephone")
     private String phone;
-    @Email //validari automate pentru email
+    @Email
     @Column(name = "email")
     private String email;
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "person")
-    @JsonManagedReference
+    @JsonManagedReference(value = "person")
     private List<Reservation> reservations;
 
 

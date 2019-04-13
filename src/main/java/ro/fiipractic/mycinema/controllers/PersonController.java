@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ro.fiipractic.mycinema.dto.PersonDto;
 import ro.fiipractic.mycinema.entity.Person;
 import ro.fiipractic.mycinema.exceptions.BadRequestException;
 import ro.fiipractic.mycinema.exceptions.NotFoundException;
@@ -28,7 +29,7 @@ public class PersonController {
 
 
     @PostMapping
-    public ResponseEntity<Person> savePerson(@RequestBody Person personToSave) throws URISyntaxException {
+    public ResponseEntity<Person> savePerson(@RequestBody PersonDto personToSave) throws URISyntaxException {
         Person person = personService.savePerson(modelMapper.map(personToSave, Person.class));
 
         return ResponseEntity.created(new URI("/api/persons/" + person.getId())).body(person);
@@ -45,7 +46,7 @@ public class PersonController {
     }
 
     @PutMapping("/{id}")
-    public Person updatePerson(@PathVariable("id") Long id, @RequestBody Person updatedPerson) throws BadRequestException, NotFoundException {
+    public Person updatePerson(@PathVariable("id") Long id, @RequestBody PersonDto updatedPerson) throws BadRequestException, NotFoundException {
         if (!id.equals(updatedPerson.getId()))
             throw new BadRequestException("Different ids: " + id + " from PathVariable and " + updatedPerson.getId() + " from RequestBody");
 

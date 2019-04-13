@@ -16,12 +16,12 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "customer_id")
-    @JsonBackReference
+    @JsonBackReference(value = "person")
     private Person person;
 
     @ManyToOne
     @JoinColumn(name = "movie_instance_id")
-    @JsonBackReference
+    @JsonBackReference(value = "movieInstance")
     private MovieInstance movieInstance;
 
     public void removeReservation() {

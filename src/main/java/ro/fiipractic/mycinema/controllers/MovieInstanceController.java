@@ -16,7 +16,7 @@ import java.net.URISyntaxException;
 import java.util.Collection;
 
 @RestController
-@RequestMapping(path = "/api/movieInstances")
+@RequestMapping(path = "/api/movie-instances")
 public class MovieInstanceController {
 
     private final ModelMapper modelMapper;
@@ -42,7 +42,7 @@ public class MovieInstanceController {
     @PostMapping
     public ResponseEntity<MovieInstance> saveReservation(@RequestBody MovieInstanceDto movieInstanceToSave) throws URISyntaxException {
         MovieInstance movieInstance = movieInstanceService.saveMovieInstance(modelMapper.map(movieInstanceToSave, MovieInstance.class));
-        return ResponseEntity.created(new URI("/api/MovieInstances/" + movieInstance.getId())).body(movieInstance);
+        return ResponseEntity.created(new URI("/api/movie-instances/" + movieInstance.getId())).body(movieInstance);
     }
 
     @PutMapping(value = "{id}")
@@ -53,7 +53,7 @@ public class MovieInstanceController {
         MovieInstance movieInstanceDb = movieInstanceService.getMovieInstanceById(id);
         modelMapper.map(movieInstanceToUpdate, movieInstanceDb);
         movieInstanceService.saveMovieInstance(movieInstanceDb);
-        return ResponseEntity.ok(new URI("/api/movieInstances/" + movieInstanceDb.getId()));
+        return ResponseEntity.ok(new URI("/api/movie-instances/" + movieInstanceDb.getId()));
     }
 
     @DeleteMapping(value = "{id}")
