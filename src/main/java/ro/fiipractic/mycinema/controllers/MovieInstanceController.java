@@ -40,7 +40,7 @@ public class MovieInstanceController {
     }
 
     @PostMapping
-    public ResponseEntity<MovieInstance> saveReservation(@RequestBody MovieInstanceDto movieInstanceToSave) throws URISyntaxException {
+    public ResponseEntity<MovieInstance> saveMovieInstance(@RequestBody MovieInstanceDto movieInstanceToSave) throws URISyntaxException {
         MovieInstance movieInstance = movieInstanceService.saveMovieInstance(modelMapper.map(movieInstanceToSave, MovieInstance.class));
         return ResponseEntity.created(new URI("/api/movie-instances/" + movieInstance.getId())).body(movieInstance);
     }

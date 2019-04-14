@@ -13,14 +13,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import ro.fiipractic.mycinema.dto.CinemaDto;
 import ro.fiipractic.mycinema.entity.Cinema;
+import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.services.impl.CinemaServiceImpl;
 
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class CinemaControllerTest {
 
-
-    //mocking:
     @Mock
     private CinemaServiceImpl cinemaService;
 
@@ -59,14 +64,47 @@ public class CinemaControllerTest {
 
     }
 
+    @Test
+    public void shouldReturnListOfCinemasByMovieRoomCapacity() {
+        createObjects(cinema, cinemaDto);
+        List<Cinema> cinemaList = new ArrayList<>();
+        cinemaList.add(cinema);
+
+        // arrange
+        Mockito.when(cinemaService.getCinemaByMovieRoomsCapacity(200)).thenReturn(cinemaList);
+
+        // act
+        List<Cinema> cinemaListResponse = cinemaController.getCinemaByMovieRoomCapacity(200);
+
+        // assert
+
+        verify(cinemaService, times(1)).getCinemaByMovieRoomsCapacity(200);
+        Assertions.assertThat(cinemaListResponse).isNotNull();
+        Assertions.assertThat(cinemaListResponse.get(0)).isEqualToComparingFieldByFieldRecursively(cinema);
+    }
+
+    @Test
+    public void shouldDeleteCinema() throws NotFoundException {
+        createObjects(cinema, cinemaDto);
+
+        // arrange
+        when(cinemaService.getCinemaById(1L)).thenReturn(cinema);
+
+        // act
+        cinemaController.deleteCinema(1L);
+
+        // assert
+        verify(cinemaService, times(1)).deleteCinema(cinema);
+    }
+
     private void createObjects(Cinema cinema, CinemaDto cinemaDto) {
 
         cinemaDto.setId(1L);
-        cinemaDto.setAddress("acasa");
+        cinemaDto.setAddress("Tudor Vladimirescu");
         cinemaDto.setName("CinemaCity");
 
         cinema.setId(1L);
-        cinema.setAddress("acasa");
+        cinema.setAddress("Tudor Vladimirescu");
         cinema.setName("CinemaCity");
     }
 

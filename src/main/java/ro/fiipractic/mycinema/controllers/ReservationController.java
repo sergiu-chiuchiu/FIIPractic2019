@@ -58,7 +58,7 @@ public class ReservationController {
 
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteMovie(@PathVariable Long id) throws NotFoundException {
+    public void deleteReservation(@PathVariable Long id) throws NotFoundException {
         Reservation reservation = reservationService.getReservationById(id);
         reservationService.deleteReservation(reservation);
     }
