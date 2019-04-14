@@ -1,5 +1,7 @@
 package ro.fiipractic.mycinema.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,6 +30,8 @@ public class MovieInstanceController {
         this.movieInstanceService = movieInstanceService;
     }
 
+    private Logger logger = LogManager.getLogger(this.getClass());
+
 
     @GetMapping
     public Collection<MovieInstance> getAllMovieInstances() {
@@ -36,20 +40,24 @@ public class MovieInstanceController {
 
     @GetMapping(value = "/{id}")
     public MovieInstance getMovieInstanceById(@PathVariable("id") Long id) throws NotFoundException {
+        logger.info("Returning instance with id=" + id);
         return movieInstanceService.getMovieInstanceById(id);
     }
 
     @PostMapping
     public ResponseEntity<MovieInstance> saveMovieInstance(@RequestBody MovieInstanceDto movieInstanceToSave) throws URISyntaxException {
         MovieInstance movieInstance = movieInstanceService.saveMovieInstance(modelMapper.map(movieInstanceToSave, MovieInstance.class));
-        return ResponseEntity.created(new URI("/api/movie-instances/" + movieInstance.getId())).body(movieInstance);
+        ResponseEntity<MovieInstance> res =  ResponseEntity.created(new URI("/api/movie-instances/" + movieInstance.getId())).body(movieInstance);
+        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
+        return res;
     }
 
     @PutMapping(value = "{id}")
     public ResponseEntity updateMovieInstance(@PathVariable Long id, @RequestBody MovieInstanceDto movieInstanceToUpdate) throws BadRequestException, NotFoundException, URISyntaxException {
-        if (!id.equals(movieInstanceToUpdate.getId()))
+        if (!id.equals(movieInstanceToUpdate.getId())) {
+            logger.warn("The ids do not match: received id=" + id + " in path and id=" + movieInstanceToUpdate.getId() + " in entity!");
             throw new BadRequestException("Different ids: " + id + " from PathVariable and " + movieInstanceToUpdate.getId() + " from RequestBody");
-
+        }
         MovieInstance movieInstanceDb = movieInstanceService.getMovieInstanceById(id);
         modelMapper.map(movieInstanceToUpdate, movieInstanceDb);
         movieInstanceService.saveMovieInstance(movieInstanceDb);

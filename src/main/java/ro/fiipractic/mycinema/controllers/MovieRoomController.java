@@ -1,5 +1,7 @@
 package ro.fiipractic.mycinema.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +29,8 @@ public class MovieRoomController {
         this.modelMapper = modelMapper;
     }
 
+    private Logger logger = LogManager.getLogger(this.getClass());
+
     @GetMapping
     public List<MovieRoom> getAllMovieRooms() {
         return movieRoomService.getAll();
@@ -35,11 +39,14 @@ public class MovieRoomController {
     @PostMapping
     public ResponseEntity<MovieRoom> saveMovieRoomResponseEntity(@RequestBody MovieRoomDto movieRoomDto) throws URISyntaxException {
         MovieRoom movieRoom = movieRoomService.saveMovieRoom(modelMapper.map(movieRoomDto, MovieRoom.class));
-        return ResponseEntity.created(new URI("/api/movie-rooms/" + movieRoom.getId())).body(movieRoom);
+        ResponseEntity<MovieRoom> res = ResponseEntity.created(new URI("/api/movie-rooms/" + movieRoom.getId())).body(movieRoom);
+        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
+        return res;
     }
 
     @GetMapping(value = "/filter/{cinemaId}")
     public List<MovieRoom> getAlMovieRoomsByCinemaid(@PathVariable("cinemaId") Long cinemaId) {
+        logger.info("Returning instance with id=" + cinemaId);
         return movieRoomService.getAllMovieRoomsByCinemaId(cinemaId);
     }
 

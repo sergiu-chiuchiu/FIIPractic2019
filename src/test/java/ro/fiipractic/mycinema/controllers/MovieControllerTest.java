@@ -18,8 +18,6 @@ import ro.fiipractic.mycinema.exceptions.NotFoundException;
 import ro.fiipractic.mycinema.services.impl.MovieServiceImpl;
 
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;

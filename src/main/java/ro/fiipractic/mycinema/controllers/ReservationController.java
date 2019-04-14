@@ -1,6 +1,8 @@
 package ro.fiipractic.mycinema.controllers;
 
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,6 +31,9 @@ public class ReservationController {
         this.modelMapper = modelMapper;
     }
 
+    private Logger logger = LogManager.getLogger(this.getClass());
+
+
     @GetMapping
     public Collection<Reservation> getAllReservations() {
         return reservationService.getAllReservations();
@@ -42,14 +47,17 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> saveReservation(@RequestBody ReservationDto reservationToSave) throws URISyntaxException {
         Reservation reservation = reservationService.saveReservation(modelMapper.map(reservationToSave, Reservation.class));
-        return ResponseEntity.created(new URI("/api/reservations/" + reservation.getId())).body(reservation);
+        ResponseEntity<Reservation> res = ResponseEntity.created(new URI("/api/reservations/" + reservation.getId())).body(reservation);
+        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
+        return res;
     }
 
     @PutMapping(value = "{id}")
     public ResponseEntity updateReservation(@PathVariable Long id, @RequestBody ReservationDto reservationToUpdate) throws BadRequestException, NotFoundException, URISyntaxException {
-        if (!id.equals(reservationToUpdate.getId()))
+        if (!id.equals(reservationToUpdate.getId())) {
+            logger.warn("The ids do not match: received id=" + id + " in path and id=" + reservationToUpdate.getId() + " in entity!");
             throw new BadRequestException("Different ids: " + id + " from PathVariable and " + reservationToUpdate.getId() + " from RequestBody");
-
+        }
         Reservation reservationDb = reservationService.getReservationById(id);
         modelMapper.map(reservationToUpdate, reservationDb);
         reservationService.saveReservation(reservationDb);
@@ -59,6 +67,7 @@ public class ReservationController {
     @DeleteMapping(value = "{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable Long id) throws NotFoundException {
+        logger.info("Deleting Reservation with id=" + id);
         Reservation reservation = reservationService.getReservationById(id);
         reservationService.deleteReservation(reservation);
     }

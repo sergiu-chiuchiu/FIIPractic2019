@@ -1,5 +1,7 @@
 package ro.fiipractic.mycinema.services.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.fiipractic.mycinema.entity.MovieRoom;
@@ -21,6 +23,7 @@ public class MovieRoomServiceImpl implements MovieRoomService {
         this.movieRoomRepository = movieRoomRepository;
         this.cinemaService = cinemaService;
     }
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public List<MovieRoom> getAll() {
@@ -34,17 +37,21 @@ public class MovieRoomServiceImpl implements MovieRoomService {
 
     @Override
     public List<MovieRoom> getAllMovieRoomsByCinemaId(Long cinemaId) {
+        logger.info("Retrieving all the Movie Rooms belongig to the cinema with id=" + cinemaId);
         return movieRoomRepository.getMovieRoomByCinema_Id(cinemaId);
     }
 
     @Override
     public MovieRoom getMovieRoomById(Long id) throws NotFoundException {
+        logger.info("Attempting to fetch from DB the movie instance with id=" + id);
         return movieRoomRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Movie Room with id=%s was not found.", id)));
     }
 
     @Override
     public void deleteMovieRoom(MovieRoom movieRoom) {
         movieRoom.getCinema().removeMovieRoom(movieRoom);
+        if (movieRoom.getCinema() != null)
+            logger.error("Could not remove Movie Room Child from Cinema. The instance will not be deleted");
         movieRoomRepository.delete(movieRoom);
     }
 

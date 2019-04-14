@@ -1,5 +1,8 @@
 package ro.fiipractic.mycinema.services.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.fiipractic.mycinema.entity.Reservation;
 import ro.fiipractic.mycinema.exceptions.NotFoundException;
@@ -13,9 +16,11 @@ public class ReservationServiceImpl implements ReservationService {
 
     private final ReservationRepository reservationRepository;
 
+    @Autowired
     public ReservationServiceImpl(ReservationRepository reservationRepository) {
         this.reservationRepository = reservationRepository;
     }
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public Collection<Reservation> getAllReservations() {
@@ -24,6 +29,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public Reservation getReservationById(Long id) throws NotFoundException {
+        logger.info("Retrieving the Reservation with id=" + id);
         return reservationRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Reservation with id=%s was not found.", id)));
     }
 
@@ -35,6 +41,9 @@ public class ReservationServiceImpl implements ReservationService {
     @Override
     public void deleteReservation(Reservation reservation) {
         reservation.removeReservation();
+        if (reservation.getMovieInstance() != null || reservation.getPerson() != null) {
+            logger.error("Could not remove Reservation Child from one of its parents. The instance will not be deleted");
+        }
         reservationRepository.delete(reservation);
     }
 }

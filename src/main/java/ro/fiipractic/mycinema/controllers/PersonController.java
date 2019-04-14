@@ -1,5 +1,7 @@
 package ro.fiipractic.mycinema.controllers;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,12 +29,15 @@ public class PersonController {
         this.modelMapper = modelMapper;
     }
 
+    private Logger logger = LogManager.getLogger(this.getClass());
+
 
     @PostMapping
     public ResponseEntity<Person> savePerson(@RequestBody PersonDto personToSave) throws URISyntaxException {
         Person person = personService.savePerson(modelMapper.map(personToSave, Person.class));
-
-        return ResponseEntity.created(new URI("/api/persons/" + person.getId())).body(person);
+        ResponseEntity<Person> res = ResponseEntity.created(new URI("/api/persons/" + person.getId())).body(person);
+        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
+        return res;
     }
 
     @GetMapping(value = "/{id}")
@@ -47,9 +52,10 @@ public class PersonController {
 
     @PutMapping("/{id}")
     public Person updatePerson(@PathVariable("id") Long id, @RequestBody PersonDto updatedPerson) throws BadRequestException, NotFoundException {
-        if (!id.equals(updatedPerson.getId()))
+        if (!id.equals(updatedPerson.getId())) {
+            logger.warn("The ids do not match: received id=" + id + " in path and id=" + updatedPerson.getId() + " in entity!");
             throw new BadRequestException("Different ids: " + id + " from PathVariable and " + updatedPerson.getId() + " from RequestBody");
-
+        }
         Person personDb = personService.getPersonById(id);
         modelMapper.map(updatedPerson, personDb);
         return personService.updatePerson(personDb);

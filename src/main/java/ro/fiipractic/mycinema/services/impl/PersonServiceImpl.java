@@ -1,5 +1,7 @@
 package ro.fiipractic.mycinema.services.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.fiipractic.mycinema.entity.Person;
@@ -14,9 +16,11 @@ public class PersonServiceImpl implements PersonService {
 
     @Autowired
     PersonRepository personRepository;
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public Person savePerson(Person personToSave) {
+        logger.info("Attempting to persist in DB Customer: " + personToSave.getFullName());
         return personRepository.save(personToSave);
     }
 
@@ -27,6 +31,7 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public Person getPersonById(Long id) throws NotFoundException {
+        logger.info("Retrieving the Customer with id=" + id);
         return personRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Person with id=%s was not found.", id)));
     }
     @Override

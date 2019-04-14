@@ -1,5 +1,7 @@
 package ro.fiipractic.mycinema.services.impl;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ro.fiipractic.mycinema.entity.Movie;
@@ -18,6 +20,7 @@ public class MovieServiceImpl implements MovieService {
     public MovieServiceImpl(MovieRepository movieRepository) {
         this.movieRepository = movieRepository;
     }
+    private Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public Collection<Movie> getAllMovies() {
@@ -26,11 +29,13 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public Movie getMovieById(Long id) throws NotFoundException {
+        logger.info("Retrieving the Movie with id=" + id);
         return movieRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Movie with id=%s was not found.", id)));
     }
 
     @Override
     public Movie saveMovie(Movie movie) {
+        logger.info("Attempting to persist in DB the Movie with title: " + movie.getTitle());
         return movieRepository.save(movie);
     }
 
