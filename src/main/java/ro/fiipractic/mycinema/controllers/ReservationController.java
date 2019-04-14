@@ -47,9 +47,7 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<Reservation> saveReservation(@RequestBody ReservationDto reservationToSave) throws URISyntaxException {
         Reservation reservation = reservationService.saveReservation(modelMapper.map(reservationToSave, Reservation.class));
-        ResponseEntity<Reservation> res = ResponseEntity.created(new URI("/api/reservations/" + reservation.getId())).body(reservation);
-        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
-        return res;
+        return ResponseEntity.created(new URI("/api/reservations/" + reservation.getId())).body(reservation);
     }
 
     @PutMapping(value = "/{id}")

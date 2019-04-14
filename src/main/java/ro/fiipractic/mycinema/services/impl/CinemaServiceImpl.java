@@ -25,7 +25,7 @@ public class CinemaServiceImpl implements CinemaService {
 
     @Override
     public Cinema saveCinema(Cinema cinema) {
-        logger.info("Attempting to persist in DB the cinema with the name: " + cinema.getName());
+        logger.info("Attempting to persist in DB the cinema with the name: " + cinema.getName() + " and id: " + cinema.getId());
         return cinemaRepository.save(cinema);
     }
 

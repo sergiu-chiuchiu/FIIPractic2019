@@ -37,13 +37,13 @@ public class MovieRoomServiceImpl implements MovieRoomService {
 
     @Override
     public List<MovieRoom> getAllMovieRoomsByCinemaId(Long cinemaId) {
-        logger.info("Retrieving all the Movie Rooms belongig to the cinema with id=" + cinemaId);
+        logger.info("Retrieving all the Movie Rooms belonging to the cinema with id=" + cinemaId);
         return movieRoomRepository.getMovieRoomByCinema_Id(cinemaId);
     }
 
     @Override
     public MovieRoom getMovieRoomById(Long id) throws NotFoundException {
-        logger.info("Attempting to fetch from DB the movie instance with id=" + id);
+        logger.info("Attempting to fetch from DB the Movie Room instance with id=" + id);
         return movieRoomRepository.findById(id).orElseThrow(() -> new NotFoundException(String.format("Movie Room with id=%s was not found.", id)));
     }
 

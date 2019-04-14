@@ -40,16 +40,14 @@ public class MovieInstanceController {
 
     @GetMapping(value = "/{id}")
     public MovieInstance getMovieInstanceById(@PathVariable("id") Long id) throws NotFoundException {
-        logger.info("Returning instance with id=" + id);
+        logger.info("Retrieving instance with id=" + id);
         return movieInstanceService.getMovieInstanceById(id);
     }
 
     @PostMapping
     public ResponseEntity<MovieInstance> saveMovieInstance(@RequestBody MovieInstanceDto movieInstanceToSave) throws URISyntaxException {
         MovieInstance movieInstance = movieInstanceService.saveMovieInstance(modelMapper.map(movieInstanceToSave, MovieInstance.class));
-        ResponseEntity<MovieInstance> res =  ResponseEntity.created(new URI("/api/movie-instances/" + movieInstance.getId())).body(movieInstance);
-        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
-        return res;
+        return ResponseEntity.created(new URI("/api/movie-instances/" + movieInstance.getId())).body(movieInstance);
     }
 
     @PutMapping(value = "/{id}")

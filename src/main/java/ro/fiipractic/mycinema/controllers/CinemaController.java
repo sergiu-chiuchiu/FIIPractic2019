@@ -36,14 +36,12 @@ public class CinemaController {
     @PostMapping
     public ResponseEntity<Cinema> saveCinema(@RequestBody CinemaDto cinemaDto) throws URISyntaxException {
         Cinema cinema = cinemaService.saveCinema(modelMapper.map(cinemaDto, Cinema.class));
-        ResponseEntity<Cinema> res = ResponseEntity.created(new URI("/api/cinemas/" + cinema.getId())).body(cinema);
-
-        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
-        return res;
+        return ResponseEntity.created(new URI("/api/cinemas/" + cinema.getId())).body(cinema);
     }
 
     @GetMapping(value = "/capacity")
     public List<Cinema> getCinemaByMovieRoomCapacity(@RequestParam("capacity") Integer capacity) {
+        logger.info("Fetching all the cinemas with a Movie Room capacity of: " + capacity);
         return cinemaService.getCinemaByMovieRoomsCapacity(capacity);
     }
 

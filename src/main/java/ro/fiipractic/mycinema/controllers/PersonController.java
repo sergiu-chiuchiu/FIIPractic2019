@@ -35,13 +35,12 @@ public class PersonController {
     @PostMapping
     public ResponseEntity<Person> savePerson(@RequestBody PersonDto personToSave) throws URISyntaxException {
         Person person = personService.savePerson(modelMapper.map(personToSave, Person.class));
-        ResponseEntity<Person> res = ResponseEntity.created(new URI("/api/persons/" + person.getId())).body(person);
-        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
-        return res;
+        return ResponseEntity.created(new URI("/api/persons/" + person.getId())).body(person);
     }
 
     @GetMapping(value = "/{id}")
     public Person getPersonById(@PathVariable("id") Long id) throws NotFoundException {
+        logger.info("Requested Person with id=" + id);
         return personService.getPersonById(id);
     }
 

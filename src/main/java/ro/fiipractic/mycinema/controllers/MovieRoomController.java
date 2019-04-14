@@ -39,9 +39,7 @@ public class MovieRoomController {
     @PostMapping
     public ResponseEntity<MovieRoom> saveMovieRoomResponseEntity(@RequestBody MovieRoomDto movieRoomDto) throws URISyntaxException {
         MovieRoom movieRoom = movieRoomService.saveMovieRoom(modelMapper.map(movieRoomDto, MovieRoom.class));
-        ResponseEntity<MovieRoom> res = ResponseEntity.created(new URI("/api/movie-rooms/" + movieRoom.getId())).body(movieRoom);
-        logger.info("The new record can be found at the following path: " + res.getHeaders().getLocation().toString());
-        return res;
+        return ResponseEntity.created(new URI("/api/movie-rooms/" + movieRoom.getId())).body(movieRoom);
     }
 
     @GetMapping(value = "/filter/{cinemaId}")
@@ -54,6 +52,7 @@ public class MovieRoomController {
     @DeleteMapping(value = "/{id}")
     public void deleteMovieRoom(@PathVariable("id") Long id) throws NotFoundException {
         MovieRoom movieRoom = movieRoomService.getMovieRoomById(id);
+        logger.info("The Movie Room to be deleted has the name: " + movieRoom.getName() + " and the id " + id);
         movieRoomService.deleteMovieRoom(movieRoom);
     }
 }
