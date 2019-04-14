@@ -52,7 +52,7 @@ public class MovieInstanceController {
         return res;
     }
 
-    @PutMapping(value = "{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity updateMovieInstance(@PathVariable Long id, @RequestBody MovieInstanceDto movieInstanceToUpdate) throws BadRequestException, NotFoundException, URISyntaxException {
         if (!id.equals(movieInstanceToUpdate.getId())) {
             logger.warn("The ids do not match: received id=" + id + " in path and id=" + movieInstanceToUpdate.getId() + " in entity!");
@@ -64,7 +64,7 @@ public class MovieInstanceController {
         return ResponseEntity.ok(new URI("/api/movie-instances/" + movieInstanceDb.getId()));
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMovieInstance(@PathVariable Long id) throws NotFoundException {
         MovieInstance movieInstance = movieInstanceService.getMovieInstanceById(id);

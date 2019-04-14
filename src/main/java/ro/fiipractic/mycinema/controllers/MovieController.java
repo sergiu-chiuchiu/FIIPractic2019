@@ -61,7 +61,7 @@ public class MovieController {
         return ResponseEntity.ok(new URI("/api/movies/" + movieDb.getId()));
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteMovie(@PathVariable Long id) throws NotFoundException {
         Movie movie = movieService.getMovieById(id);

@@ -48,7 +48,7 @@ public class CinemaController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteCinema(@PathVariable("id") Long id) throws NotFoundException {
         Cinema cinema = cinemaService.getCinemaById(id);
         logger.info("The cinema to be deleted has the name: " + cinema.getName() + " and the id " + id);

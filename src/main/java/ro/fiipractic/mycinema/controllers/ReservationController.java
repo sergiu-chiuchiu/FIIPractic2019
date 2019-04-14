@@ -52,7 +52,7 @@ public class ReservationController {
         return res;
     }
 
-    @PutMapping(value = "{id}")
+    @PutMapping(value = "/{id}")
     public ResponseEntity updateReservation(@PathVariable Long id, @RequestBody ReservationDto reservationToUpdate) throws BadRequestException, NotFoundException, URISyntaxException {
         if (!id.equals(reservationToUpdate.getId())) {
             logger.warn("The ids do not match: received id=" + id + " in path and id=" + reservationToUpdate.getId() + " in entity!");
@@ -64,7 +64,7 @@ public class ReservationController {
         return ResponseEntity.ok(new URI("/api/reservations/" + reservationDb.getId()));
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteReservation(@PathVariable Long id) throws NotFoundException {
         logger.info("Deleting Reservation with id=" + id);

@@ -51,7 +51,7 @@ public class MovieRoomController {
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteMovieRoom(@PathVariable("id") Long id) throws NotFoundException {
         MovieRoom movieRoom = movieRoomService.getMovieRoomById(id);
         movieRoomService.deleteMovieRoom(movieRoom);
