@@ -30,7 +30,7 @@ public class ScheduledEmail {
         this.movieInstanceRepository = movieInstanceRepository;
     }
 
-    @Scheduled(cron = "*/10 26-29 11 * * ?")
+    @Scheduled(cron = "0 0 7 * * ?")
     public void testing() {
 
         logger.info("7 o'clock scheduled email :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
