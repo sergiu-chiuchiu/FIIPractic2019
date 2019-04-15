@@ -45,7 +45,7 @@ public class ScheduledEmail {
 
                 String email = r.getPerson().getEmail();
                 // we make sure that even if the customer has multiple reservations that day
-                // he will only receive one email
+                // he will only receive one email (I know that is not the nicest solution :) )
                 if (listMailData.containsKey(email)) {
                     continue;
                 } else {
