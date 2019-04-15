@@ -5,7 +5,7 @@ public class MailData {
 
     private String name;
     private String to;
-    private String from;
+    private String from = "myCinema";
     private String subject;
 
     public String getName() {

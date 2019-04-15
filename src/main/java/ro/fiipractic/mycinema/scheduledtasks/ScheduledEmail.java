@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ro.fiipractic.mycinema.dto.MailData;
+import ro.fiipractic.mycinema.entity.MovieInstance;
+import ro.fiipractic.mycinema.entity.Reservation;
+import ro.fiipractic.mycinema.repositories.MovieInstanceRepository;
 import ro.fiipractic.mycinema.services.EmailService;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class ScheduledEmail {
@@ -19,27 +22,52 @@ public class ScheduledEmail {
     private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
 
     private EmailService emailService;
+    private MovieInstanceRepository movieInstanceRepository;
 
     @Autowired
-    public ScheduledEmail(EmailService emailService) {
+    public ScheduledEmail(EmailService emailService, MovieInstanceRepository movieInstanceRepository) {
         this.emailService = emailService;
+        this.movieInstanceRepository = movieInstanceRepository;
     }
 
-    @Scheduled(cron = "0 51 23 * * ?")
-    public void testing() {
-        logger.info("Fixed Rate Task :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
-        MailData mailData = new MailData();
-        mailData.setFrom("estrazionefatture2019@gmail.com");
-        mailData.setTo("sergiu.chiuchiu@gmail.com");
-        mailData.setSubject("Test Email");
+    @Scheduled(cron = "0 0 7 * * ?")
+    public void testing() throws ParseException {
 
-        Map<String, Object> model = new HashMap<>();
-        model.put("Name", "Andrei B");
-        model.put("location", "NYC");
+        logger.info("7 o'clock scheduled email :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
 
-        emailService.sendEmail(mailData, model);
+        Map<String, MailData> listMailData = new HashMap<>();
+        Map<String, Object> mapOfModel = new HashMap<>();
 
+        List<MovieInstance> allMovieInstances = movieInstanceRepository.findAllMovieInstances(new Date());
+        for (MovieInstance mi : allMovieInstances) {
 
+            for (Reservation r : mi.getReservations()) {
+
+                String email = r.getPerson().getEmail();
+                // we make sure that even if the customer has multiple reservations that day
+                // he will only receive one email
+                if (listMailData.containsKey(email)) {
+                    continue;
+                } else {
+                    MailData md = new MailData();
+                    md.setSubject("Today Movie Reservation Reminder");
+                    md.setTo(email);
+                    listMailData.put(email, md);
+
+                    Map<String, Object> mod = new HashMap<>();
+
+                    mod.put("Name", r.getPerson().getFullName());
+                    mod.put("phone", r.getPerson().getPhone());
+                    mapOfModel.put(email, mod);
+                }
+            }
+        }
+
+        for (String emailKey : listMailData.keySet()) {
+            logger.info("Sending movie reminder email to: " + emailKey);
+            emailService.sendEmail(listMailData.get(emailKey), (Map<String, Object>) mapOfModel.get(emailKey));
+        }
+        logger.info("Scheduled email sent successfully :: Finish Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
     }
 
 }
