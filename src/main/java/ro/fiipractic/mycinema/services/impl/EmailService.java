@@ -1,4 +1,4 @@
-package ro.fiipractic.mycinema.services;
+package ro.fiipractic.mycinema.services.impl;
 
 import freemarker.template.Configuration;
 import freemarker.template.Template;

@@ -6,12 +6,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ro.fiipractic.mycinema.dto.MailData;
+import ro.fiipractic.mycinema.dto.MailResponse;
 import ro.fiipractic.mycinema.entity.MovieInstance;
 import ro.fiipractic.mycinema.entity.Reservation;
 import ro.fiipractic.mycinema.repositories.MovieInstanceRepository;
-import ro.fiipractic.mycinema.services.EmailService;
+import ro.fiipractic.mycinema.services.impl.EmailService;
 
-import java.text.ParseException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -30,8 +30,8 @@ public class ScheduledEmail {
         this.movieInstanceRepository = movieInstanceRepository;
     }
 
-    @Scheduled(cron = "0 0 7 * * ?")
-    public void testing() throws ParseException {
+    @Scheduled(cron = "*/10 26-29 11 * * ?")
+    public void testing() {
 
         logger.info("7 o'clock scheduled email :: Execution Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
 
@@ -65,7 +65,13 @@ public class ScheduledEmail {
 
         for (String emailKey : listMailData.keySet()) {
             logger.info("Sending movie reminder email to: " + emailKey);
-            emailService.sendEmail(listMailData.get(emailKey), (Map<String, Object>) mapOfModel.get(emailKey));
+            MailResponse mr = emailService.sendEmail(listMailData.get(emailKey), (Map<String, Object>) mapOfModel.get(emailKey));
+
+            if (mr.isStatus()) {
+                logger.info("Email sent successfully to: " + emailKey);
+            } else {
+                logger.warn("Could not send email to: " + emailKey);
+            }
         }
         logger.info("Scheduled email sent successfully :: Finish Time - {}", dateTimeFormatter.format(LocalDateTime.now()));
     }
